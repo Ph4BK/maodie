@@ -16,7 +16,7 @@ GameScreen::GameScreen() : snake_()
 
 void GameScreen::handleInput(sf::RenderWindow& window)
 {
-	snake_.handleInput();
+	snake_.handleInput(window);
 }
 
 void GameScreen::update(sf::Time delta)
@@ -43,8 +43,8 @@ void GameScreen::generateFruit()
 {
 	static std::default_random_engine engine;
 	engine.seed(time(NULL));
-	static std::uniform_int_distribution<int> xDistribution(0, Game::Width - SnakeNode::Width);
-	static std::uniform_int_distribution<int> yDistribution(0, Game::Height - SnakeNode::Height);
+	static std::uniform_int_distribution<int> xDistribution(0, Game::Width - SnakeNode::Diameter);
+	static std::uniform_int_distribution<int> yDistribution(0, Game::Height - SnakeNode::Diameter);
 
 	fruit_.push_back(Fruit(sf::Vector2f(xDistribution(engine), yDistribution(engine))));
 }

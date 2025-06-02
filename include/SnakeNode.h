@@ -18,13 +18,12 @@ public:
 	void render(sf::RenderWindow& window);
 
 	sf::Vector2f getPosition() const;
-	sf::FloatRect getBounds() const;
+	sf::FloatRect getHitbox() const;
 
-	static const float Width;
-	static const float Height;
+	static const float Diameter;
 
 private:
-	sf::RectangleShape shape_;
+	sf::CircleShape shape_;
 	sf::Vector2f position_;
 };
 }
