@@ -13,7 +13,7 @@ using namespace sfSnake;
 
 const int Snake::InitialSize = 5;
 
-Snake::Snake() : direction_(0.f, -1.f), residualDirection_(0.f, 0.f), sharpTurn_(false), hitSelf_(false)
+Snake::Snake() : direction_(0.f, -1.f), residualDirection_(0.f, 0.f), sharpTurn_(false), hitSelf_(false), overlap_(0)
 {
 	initNodes();
 
@@ -114,16 +114,16 @@ void Snake::checkFruitCollisions(std::vector<Fruit>& fruits)
 	if (toRemove != fruits.end())
 	{
 		pickupSound_.play();
-		grow();
+		if (toRemove->getColor() == sf::Color::Red) grow(3);
+		else if (toRemove->getColor() == sf::Color::Blue) grow(2);
+		else if (toRemove->getColor() == sf::Color::Green) grow(1);
 		fruits.erase(toRemove);
 	}
 }
 
-void Snake::grow()
+void Snake::grow(int length)
 {
-	nodes_.push_back(SnakeNode(sf::Vector2f(
-		nodes_[nodes_.size() - 1].getPosition().x - direction_.first * SnakeNode::Diameter,
-		nodes_[nodes_.size() - 1].getPosition().y - direction_.second * SnakeNode::Diameter)));
+	overlap_ += length;
 }
 
 unsigned Snake::getSize() const
@@ -167,9 +167,17 @@ void Snake::checkEdgeCollisions()
 
 void Snake::move()
 {
-	for (decltype(nodes_.size()) i = nodes_.size() - 1; i > 0; --i)
+	decltype(nodes_.size()) orig_len = nodes_.size();
+
+	if (overlap_){
+		nodes_.push_back(SnakeNode(sf::Vector2f(
+			nodes_[orig_len - 1].getPosition().x, nodes_[orig_len - 1].getPosition().y)));
+		overlap_--;
+	}
+
+	for (decltype(nodes_.size()) i = orig_len - 1; i > 0; --i)
 	{
-		nodes_[i].setPosition(nodes_.at(i - 1).getPosition());
+		nodes_[i].setPosition(nodes_[i - 1].getPosition());
 	}
 
 	nodes_[0].move(direction_.first * SnakeNode::Diameter, direction_.second * SnakeNode::Diameter);

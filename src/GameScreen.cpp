@@ -46,6 +46,25 @@ void GameScreen::generateFruit()
 	static std::uniform_int_distribution<int> xDistribution(0, Game::Width - SnakeNode::Diameter);
 	static std::uniform_int_distribution<int> yDistribution(0, Game::Height - SnakeNode::Diameter);
 
-	fruit_.push_back(Fruit(sf::Vector2f(xDistribution(engine), yDistribution(engine))));
+	sf::Color color;
+	switch (rand() % 8)
+	{
+		case 0:
+			color = sf::Color::Black;
+			break;
+		case 1:
+			color = sf::Color(139, 69, 19); //brown
+			break;
+		case 2: case 3:
+			color = sf::Color::Red;
+			break;
+		case 4: case 5:
+			color = sf::Color::Blue;
+			break;
+		case 6: case 7:
+			color = sf::Color::Green;
+			break;
+	}
+	fruit_.push_back(Fruit(sf::Vector2f(xDistribution(engine), yDistribution(engine)), color));
 }
 

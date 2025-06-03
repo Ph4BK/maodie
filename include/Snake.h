@@ -28,7 +28,7 @@ public:
 
 private:
 	void move();
-	void grow();
+	void grow(int length);
 	void checkEdgeCollisions();
 	void checkSelfCollisions();
 	void initNodes();
@@ -47,6 +47,7 @@ private:
 	sf::Sound dieSound_;
 
 	std::vector<SnakeNode> nodes_;
+	int overlap_;
 
 	static const int InitialSize;
 };
