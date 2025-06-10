@@ -4,7 +4,7 @@
 
 using namespace sfSnake;
 
-const float Fruit::Radius = 5.f;
+const float Fruit::Radius = 10.f;
 
 Fruit::Fruit(sf::Vector2f position, sf::Color color)
 {

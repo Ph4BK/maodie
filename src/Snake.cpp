@@ -32,7 +32,8 @@ void Snake::initNodes()
 	{
 		nodes_.push_back(SnakeNode(sf::Vector2f(
 			Game::Width / 2 - SnakeNode::Diameter / 2,
-			Game::Height / 2 - (SnakeNode::Diameter / 2) + (SnakeNode::Diameter * i))));
+			Game::Height / 2 - (SnakeNode::Diameter / 2) + (SnakeNode::Diameter * i)),
+			i == 0));
 	}
 }
 
@@ -99,6 +100,9 @@ void Snake::update(sf::Time delta)
 	move();
 	checkEdgeCollisions();
 	checkSelfCollisions();
+	
+	for (auto& node : nodes_)
+		node.update();
 }
 
 void Snake::checkFruitCollisions(std::vector<Fruit>& fruits)
@@ -117,6 +121,7 @@ void Snake::checkFruitCollisions(std::vector<Fruit>& fruits)
 		if (toRemove->getColor() == sf::Color::Red) grow(3);
 		else if (toRemove->getColor() == sf::Color::Blue) grow(2);
 		else if (toRemove->getColor() == sf::Color::Green) grow(1);
+		nodes_[0].triggerHeadChange();
 		fruits.erase(toRemove);
 	}
 }
@@ -177,9 +182,15 @@ void Snake::move()
 
 	for (decltype(nodes_.size()) i = orig_len - 1; i > 0; --i)
 	{
-		nodes_[i].setPosition(nodes_[i - 1].getPosition());
+		sf::Vector2f prevPos = nodes_[i - 1].getPosition();
+		sf::Vector2f currentPos = nodes_[i].getPosition();
+		float dx = prevPos.x - currentPos.x;
+		float dy = prevPos.y - currentPos.y;
+		nodes_[i].setDirection(dx, dy);
+		nodes_[i].setPosition(prevPos);
 	}
 
+	nodes_[0].setDirection(direction_.first, direction_.second);
 	nodes_[0].move(direction_.first * SnakeNode::Diameter, direction_.second * SnakeNode::Diameter);
 }
 
