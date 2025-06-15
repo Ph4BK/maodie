@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 
 #include "Fruit.h"
+#include "Screen.h"
+#include "Game.h"
 
 using namespace sfSnake;
 
@@ -11,7 +13,7 @@ Fruit::Fruit(sf::Vector2f position, sf::Color color)
 	shape_.setPosition(position);
 	shape_.setRadius(Fruit::Radius);
 	shape_.setFillColor(color);
-	shape_.setOutlineColor(sf::Color::White);
+	shape_.setOutlineColor(Screen::getContrastColor(Game::Instance->getBackgroundColor()));
 	shape_.setOutlineThickness(-1.f);
 }
 

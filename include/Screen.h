@@ -10,6 +10,7 @@ public:
 	virtual void update(sf::Time delta) = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
 
+	static sf::Color getContrastColor(const sf::Color& backgroundColor);
 };
 
 #endif

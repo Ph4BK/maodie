@@ -21,17 +21,27 @@ public:
 	void handleInput();
 	void update(sf::Time delta);
 	void render();
-
+	void setBackgroundColor(const sf::Color& color);
+	void getEvent(sf::RenderWindow& window);
+	sf::Color getBackgroundColor() const;
+	void setGridColor(const sf::Color& color);
+	sf::Color getGridColor() const;
+	
 	static const int Width = 640;
 	static const int Height = 480;
+	static const sf::Time TimePerFrame;
 
 	static std::shared_ptr<Screen> Screen;
+	static std::unique_ptr<Game> Instance;
+
+public:
+	sf::Event event_;
 
 private:
 	sf::RenderWindow window_;
 	sf::Music bgMusic_;
-	
-	static const sf::Time TimePerFrame;
+	sf::Color backgroundColor_;
+	sf::Color gridColor_;
 };
 }
 

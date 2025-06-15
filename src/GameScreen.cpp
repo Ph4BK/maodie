@@ -5,6 +5,7 @@
 
 #include "GameScreen.h"
 #include "GameOverScreen.h"
+#include "MenuScreen.h"
 #include "Game.h"
 
 using namespace sfSnake;
@@ -16,6 +17,13 @@ GameScreen::GameScreen() : snake_()
 
 void GameScreen::handleInput(sf::RenderWindow& window)
 {
+	sf::Event event = Game::Instance->event_;
+	if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+	{
+		Game::Screen = std::make_shared<MenuScreen>();
+		return;
+	}
+	
 	snake_.handleInput(window);
 }
 
@@ -53,7 +61,7 @@ void GameScreen::generateFruit()
 			color = sf::Color::Black;
 			break;
 		case 1:
-			color = sf::Color(139, 69, 19); //brown
+			color = sf::Color(139, 69, 19); // Brown
 			break;
 		case 2: case 3:
 			color = sf::Color::Red;

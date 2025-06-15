@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "GameScreen.h"
 #include "GameOverScreen.h"
+#include "SettingsScreen.h"
 
 using namespace sfSnake;
 
@@ -15,6 +16,7 @@ GameOverScreen::GameOverScreen(std::size_t score) : score_(score)
 	text_.setFont(font_);
 	text_.setString("Your score: " + std::to_string(score) + "!"
 		"\n\nPress [SPACE] to retry"
+		"\n\nPress [S] for settings"
 		"\n\nPress [ESC] to quit");
 	text_.setColor(sf::Color::Red);
 
@@ -26,9 +28,13 @@ GameOverScreen::GameOverScreen(std::size_t score) : score_(score)
 
 void GameOverScreen::handleInput(sf::RenderWindow& window)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	sf::Event event = Game::Instance->event_;
+	if (event.type != sf::Event::KeyReleased) return;
+	if (event.key.code == sf::Keyboard::Space)
 		Game::Screen = std::make_shared<GameScreen>();
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	else if (event.key.code == sf::Keyboard::S)
+		Game::Screen = std::make_shared<SettingsScreen>();
+	else if (event.key.code == sf::Keyboard::Escape)
 		window.close();
 }
 

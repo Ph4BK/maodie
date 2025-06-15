@@ -32,6 +32,7 @@ target_link_libraries(sfSnake PRIVATE
 file(COPY ${CMAKE_SOURCE_DIR}/Fonts DESTINATION ${CMAKE_BINARY_DIR}/bin/Release)
 file(COPY ${CMAKE_SOURCE_DIR}/Music DESTINATION ${CMAKE_BINARY_DIR}/bin/Release)
 file(COPY ${CMAKE_SOURCE_DIR}/Sounds DESTINATION ${CMAKE_BINARY_DIR}/bin/Release)
+file(COPY ${CMAKE_SOURCE_DIR}/Images DESTINATION ${CMAKE_BINARY_DIR}/bin/Release)
 
 if(WIN32)
     add_custom_command(TARGET sfSnake POST_BUILD

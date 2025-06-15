@@ -39,7 +39,8 @@ void Snake::initNodes()
 
 void Snake::handleInput(sf::RenderWindow& window)
 {
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+	sf::Event event = Game::Instance->event_;
+	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left){
 		sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
 		sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mousePixelPos);
 
@@ -55,16 +56,16 @@ void Snake::handleInput(sf::RenderWindow& window)
 														  (mouse_y - head_y) / dist);
 		getDirection(temp_dir);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+	else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up){
 		getDirection(std::make_pair(0.f, -1.f));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+	else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down){
 		getDirection(std::make_pair(0.f, 1.f));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+	else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left){
 		getDirection(std::make_pair(-1.f, 0.f));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+	else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right){
 		getDirection(std::make_pair(1.f, 0.f));
 	}
 	else if (sharpTurn_){

@@ -4,6 +4,7 @@
 
 #include "GameScreen.h"
 #include "MenuScreen.h"
+#include "SettingsScreen.h"
 #include "Game.h"
 
 using namespace sfSnake;
@@ -13,8 +14,10 @@ MenuScreen::MenuScreen()
 	font_.loadFromFile("Fonts/game_over.ttf");
 	text_.setFont(font_);
 	text_.setString(
-		"\n\n\n\n\n\n\n\n\nPress [SPACE] to play"
+		"\n\n\n\n\n\n\n\nPress [SPACE] to play"
+		"\n\nPress [S] for settings"
 		"\n\nPress [ESC] to quit");
+	text_.setColor(sf::Color::White);
 
 	snakeText_.setFont(font_);
 	snakeText_.setString("Snake!");
@@ -35,9 +38,14 @@ MenuScreen::MenuScreen()
 
 void MenuScreen::handleInput(sf::RenderWindow& window)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	sf::Event event = Game::Instance->event_;
+	if (event.type != sf::Event::KeyReleased) return;
+	if (event.key.code == sf::Keyboard::Space)
 		Game::Screen = std::make_shared<GameScreen>();
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	else if (event.key.code == sf::Keyboard::S)
+		Game::Screen = std::make_shared<SettingsScreen>();
+
+	else if (event.key.code == sf::Keyboard::Escape)
 		window.close();
 }
 
@@ -71,6 +79,12 @@ void MenuScreen::update(sf::Time delta)
 
 void MenuScreen::render(sf::RenderWindow& window)
 {
+	if (Game::Instance)
+	{
+		sf::Color contrastColor = Screen::getContrastColor(Game::Instance->getBackgroundColor());
+		text_.setColor(contrastColor);
+	}
+	
 	window.draw(text_);
 	window.draw(snakeText_);
 }
