@@ -25,6 +25,7 @@ public:
 	bool hitSelf() const;
 
 	unsigned getSize() const;
+	const std::vector<SnakeNode>& getNodes() const;
 
 private:
 	void move();

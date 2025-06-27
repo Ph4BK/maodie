@@ -6,6 +6,8 @@
 #include "GameScreen.h"
 #include "GameOverScreen.h"
 #include "MenuScreen.h"
+#include "HighScoreManager.h"
+#include "NameInputScreen.h"
 #include "Game.h"
 
 using namespace sfSnake;
@@ -35,8 +37,14 @@ void GameScreen::update(sf::Time delta)
 	snake_.update(delta);
 	snake_.checkFruitCollisions(fruit_);
 
-	if (snake_.hitSelf())
-		Game::Screen = std::make_shared<GameOverScreen>(snake_.getSize());
+	if (snake_.hitSelf()) {
+		size_t score = snake_.getSize();
+		if (HighScoreManager::getInstance().isHighScore(score)) {
+			Game::Screen = std::make_shared<NameInputScreen>(score);
+		} else {
+			Game::Screen = std::make_shared<GameOverScreen>(score);
+		}
+	}
 }
 
 void GameScreen::render(sf::RenderWindow& window)
@@ -51,8 +59,22 @@ void GameScreen::generateFruit()
 {
 	static std::default_random_engine engine;
 	engine.seed(time(NULL));
-	static std::uniform_int_distribution<int> xDistribution(0, Game::Width - SnakeNode::Diameter);
-	static std::uniform_int_distribution<int> yDistribution(0, Game::Height - SnakeNode::Diameter);
+	static std::uniform_int_distribution<int> xDistribution(0, Game::Width - 2 * Fruit::Radius);
+	static std::uniform_int_distribution<int> yDistribution(0, Game::Height - 2 * Fruit::Radius);
+	int x = 0, y = 0;
+	bool regenerate = false;
+	do {
+		x = xDistribution(engine);
+		y = yDistribution(engine);
+		sf::FloatRect fruitBounds(x, y, 2 * Fruit::Radius, 2 * Fruit::Radius);
+		regenerate = false;
+		for (const auto& node : snake_.getNodes()) {
+			if (node.getHitbox().intersects(fruitBounds)) {
+				regenerate = true;
+				break;
+			}
+		}
+	} while (regenerate);
 
 	sf::Color color;
 	switch (rand() % 8)
@@ -73,6 +95,5 @@ void GameScreen::generateFruit()
 			color = sf::Color::Green;
 			break;
 	}
-	fruit_.push_back(Fruit(sf::Vector2f(xDistribution(engine), yDistribution(engine)), color));
+	fruit_.push_back(Fruit(sf::Vector2f(x, y), color));
 }
-

@@ -5,6 +5,7 @@
 #include "GameScreen.h"
 #include "MenuScreen.h"
 #include "SettingsScreen.h"
+#include "HighScoreScreen.h"
 #include "Game.h"
 
 using namespace sfSnake;
@@ -12,12 +13,6 @@ using namespace sfSnake;
 MenuScreen::MenuScreen()
 {
 	font_.loadFromFile("Fonts/game_over.ttf");
-	text_.setFont(font_);
-	text_.setString(
-		"\n\n\n\n\n\n\n\nPress [SPACE] to play"
-		"\n\nPress [S] for settings"
-		"\n\nPress [ESC] to quit");
-	text_.setColor(sf::Color::White);
 
 	snakeText_.setFont(font_);
 	snakeText_.setString("Snake!");
@@ -25,15 +20,24 @@ MenuScreen::MenuScreen()
 	snakeText_.setCharacterSize(64);
 	snakeText_.setStyle(sf::Text::Bold);
 
-	sf::FloatRect textBounds = text_.getLocalBounds();
-	text_.setOrigin(textBounds.left + textBounds.width / 2,
-		textBounds.top + textBounds.height / 2);
-	text_.setPosition(Game::Width / 2, Game::Height / 2);
-
 	sf::FloatRect snakeTextBounds = snakeText_.getLocalBounds();
 	snakeText_.setOrigin(snakeTextBounds.left + snakeTextBounds.width / 2,
 		snakeTextBounds.top + snakeTextBounds.height / 2);
 	snakeText_.setPosition(Game::Width / 2, Game::Height / 4);
+
+	text_.setFont(font_);
+	text_.setString(
+		"\n\n\n\n\n\n\n\nPress [SPACE] to play"
+		"\n\nPress [H] for high scores"
+		"\n\nPress [S] for settings"
+		"\n\nPress [ESC] to quit");
+	text_.setColor(sf::Color::White);
+	text_.setCharacterSize(24);
+	
+	sf::FloatRect textBounds = text_.getLocalBounds();
+	text_.setOrigin(textBounds.left + textBounds.width / 2,
+		textBounds.top + textBounds.height / 2);
+	text_.setPosition(Game::Width / 2, Game::Height / 2);
 }
 
 void MenuScreen::handleInput(sf::RenderWindow& window)
@@ -42,6 +46,8 @@ void MenuScreen::handleInput(sf::RenderWindow& window)
 	if (event.type != sf::Event::KeyReleased) return;
 	if (event.key.code == sf::Keyboard::Space)
 		Game::Screen = std::make_shared<GameScreen>();
+	else if (event.key.code == sf::Keyboard::H)
+		Game::Screen = std::make_shared<HighScoreScreen>();
 	else if (event.key.code == sf::Keyboard::S)
 		Game::Screen = std::make_shared<SettingsScreen>();
 

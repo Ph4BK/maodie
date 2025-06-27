@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-
 #include <memory>
+#include <vector>
 
 #include "MenuScreen.h"
 #include "Game.h"
@@ -66,16 +66,22 @@ void Game::render()
 void Game::getEvent(sf::RenderWindow& window)
 {
 	event_ = sf::Event();
+	eventQueue_ = std::vector<sf::Event>();
 	sf::Event event;
-	while (window.pollEvent(event))
-	{
-		if (event.type == sf::Event::Closed)
-		{
+	while (window.pollEvent(event)) {
+		if (event.type == sf::Event::Closed) {
 			window.close();
 			return;
 		}
-		else if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonReleased)
-		    event_ = event;
+		eventQueue_.push_back(event);
+	}
+	
+	for (auto it = eventQueue_.rbegin(); it != eventQueue_.rend(); ++it) {
+		const sf::Event& e = *it;
+		if (e.type == sf::Event::KeyReleased || e.type == sf::Event::MouseButtonReleased) {
+			event_ = e;
+			return;
+		}
 	}
 }
 

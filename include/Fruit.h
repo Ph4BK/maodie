@@ -14,10 +14,10 @@ public:
 
 	sf::FloatRect getBounds() const;
 	sf::Color getColor() const;
-private:
-	sf::CircleShape shape_;
 
 	static const float Radius;
+private:
+	sf::CircleShape shape_;
 };
 }
 

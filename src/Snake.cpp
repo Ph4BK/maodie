@@ -40,7 +40,8 @@ void Snake::initNodes()
 void Snake::handleInput(sf::RenderWindow& window)
 {
 	sf::Event event = Game::Instance->event_;
-	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left){
+	if ((event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) ||
+		sf::Mouse::isButtonPressed(sf::Mouse::Left)){
 		sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
 		sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mousePixelPos);
 
@@ -135,6 +136,11 @@ void Snake::grow(int length)
 unsigned Snake::getSize() const
 {
 	return nodes_.size();
+}
+
+const std::vector<SnakeNode>& Snake::getNodes() const
+{
+	return nodes_;
 }
 
 bool Snake::hitSelf() const

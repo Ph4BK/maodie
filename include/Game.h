@@ -36,6 +36,7 @@ public:
 
 public:
 	sf::Event event_;
+	std::vector<sf::Event> eventQueue_;
 
 private:
 	sf::RenderWindow window_;
