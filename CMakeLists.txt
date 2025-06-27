@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(SFML_DIR "${CMAKE_SOURCE_DIR}/3rd/SFML-2.6.0/build")
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/3rd/SFML-2.6.0/install/lib/cmake/SFML")
 
 find_package(SFML 2.6 COMPONENTS graphics window system audio network REQUIRED)
 
@@ -42,7 +42,7 @@ if(WIN32)
         $<TARGET_FILE:sfml-system>
         $<TARGET_FILE:sfml-audio>
         $<TARGET_FILE:sfml-network>
-        "${CMAKE_SOURCE_DIR}/3rd/SFML-2.6.0/bin/openal32.dll"
+        "${CMAKE_SOURCE_DIR}/3rd/SFML-2.6.0/install/bin/openal32.dll"
         $<TARGET_FILE_DIR:sfSnake>
     )
 endif()

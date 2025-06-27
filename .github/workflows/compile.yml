@@ -1,0 +1,20 @@
+name: Build with CMake (MSVC 17)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure with CMake
+      run: cmake -G "Visual Studio 17 2022" -A x64 -B build
+
+    - name: Build with MSVC
+      run: cmake --build build --config Release

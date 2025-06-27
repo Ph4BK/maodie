@@ -1,4 +1,6 @@
 build/
+3rd/SFML-2.6.0/*
+!3rd/SFML-2.6.0/install/
 class_diagram.puml
 game_main_flow.mmd
 todo.txt
