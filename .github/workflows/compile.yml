@@ -19,15 +19,13 @@ jobs:
     - name: Build with MSVC
       run: cmake --build build --config Release
 
-    - name: Create Release Tag
+    - name: Generate Release Tag
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       id: tag_version
       run: |
         $timestamp = Get-Date -Format "yyyy.MM.dd.HHmm"
         $tag = "release-$timestamp"
         echo "tag=$tag" >> $env:GITHUB_OUTPUT
-        git tag $tag
-        git push origin $tag
 
     - name: Package Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
