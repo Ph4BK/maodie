@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -18,3 +20,78 @@ jobs:
 
     - name: Build with MSVC
       run: cmake --build build --config Release
+
+    - name: Generate Release Tag
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: tag_version
+      run: |
+        $timestamp = Get-Date -Format "yyyy.MM.dd.HHmm"
+        $tag = "release-$timestamp"
+        echo "tag=$tag" >> $env:GITHUB_OUTPUT
+
+    - name: Package Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        # CMake already assembled everything we need in the build output directory
+        # Just find where the executable was built and package that entire directory
+        
+        echo "=== Looking for built executable and dependencies ==="
+        $exeDir = ""
+        
+        # Check common MSVC output locations
+        if (Test-Path "build/bin/Release/sfSnake.exe") {
+          $exeDir = "build/bin/Release"
+        } elseif (Test-Path "build/bin/sfSnake.exe") {
+          $exeDir = "build/bin"
+        } else {
+          # Search for the executable
+          $exePath = Get-ChildItem -Recurse build -Name "sfSnake.exe" | Select-Object -First 1
+          if ($exePath) {
+            $exeDir = Split-Path "build/$exePath" -Parent
+          }
+        }
+        
+        if (-not $exeDir -or -not (Test-Path "$exeDir/sfSnake.exe")) {
+          echo "Error: Could not find sfSnake.exe and its dependencies"
+          exit 1
+        }
+        
+        echo "Found complete build output at: $exeDir"
+        
+        # Show what CMake assembled for us
+        echo ""
+        echo "=== CMake build output contents ==="
+        Get-ChildItem -Recurse $exeDir | ForEach-Object { echo $_.FullName.Replace((Get-Location).Path + "\$exeDir\", "") }
+        
+        # Package the complete directory that CMake prepared
+        Compress-Archive -Path "$exeDir/*" -DestinationPath "sfSnake-Release.zip"
+        echo "Created release package from CMake build output"
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.tag }}
+        name: "Snake Game Release ${{ steps.tag_version.outputs.tag }}"
+        body: |
+          🎮 **Automated Snake Game Release**
+          
+          **What's included:**
+          - `sfSnake.exe` - The game executable
+          - SFML runtime libraries (graphics, window, system, audio, network, openal32)
+          - Game assets: Fonts, Music, Sounds, Images
+          
+          **How to run:**
+          1. Download `sfSnake-Release.zip`
+          2. Extract to any folder
+          3. Run `sfSnake.exe`
+          
+          **Build info:**
+          - Built with MSVC 2022 on Windows
+          - Commit: ${{ github.sha }}
+          - Built: ${{ steps.tag_version.outputs.tag }}
+        files: sfSnake-Release.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
